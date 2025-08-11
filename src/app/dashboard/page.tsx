@@ -1,6 +1,5 @@
 "use client"
 
-import { ChartAreaInteractive } from "@/components/chart-area-interactive"
 import { SectionCards } from "@/components/section-cards"
 import { QuickAccessCards } from "@/components/quick-access-cards"
 import { useAuth } from "@/hooks/use-auth"
@@ -45,10 +44,6 @@ export default function DashboardPage() {
         <QuickAccessCards />
       </div>
       
-      <SectionCards />
-      <div className="px-4 lg:px-6">
-        <ChartAreaInteractive />
-      </div>
       {/* DataTable removido temporalmente para evitar el error */}
     </div>
   )

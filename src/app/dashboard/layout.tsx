@@ -1,6 +1,7 @@
 import { AppSidebar } from "@/components/app-sidebar"
 import { SiteHeader } from "@/components/site-header"
 import { AuthGuard } from "@/components/auth-guard"
+import { MobileBottomNav } from "@/components/mobile-bottom-nav"
 import {
   SidebarInset,
   SidebarProvider,
@@ -26,12 +27,13 @@ export default function DashboardLayout({
           <SiteHeader />
           <div className="flex flex-1 flex-col">
             <div className="@container/main flex flex-1 flex-col gap-2">
-              <div className="flex flex-1 flex-col">
+              <div className="flex flex-1 flex-col pb-24 md:pb-0">
                 {children}
               </div>
             </div>
           </div>
         </SidebarInset>
+        <MobileBottomNav />
       </SidebarProvider>
     </AuthGuard>
   )

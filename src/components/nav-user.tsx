@@ -97,7 +97,7 @@ export function NavUser() {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => router.push("/dashboard/perfil")}>
                 <IconUserCircle />
                 Mi Perfil
               </DropdownMenuItem>

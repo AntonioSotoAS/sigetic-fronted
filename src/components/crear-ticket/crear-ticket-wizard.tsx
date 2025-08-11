@@ -140,7 +140,7 @@ export function CrearTicketWizard() {
 
       await createTicket(ticketDto).unwrap()
       toast.success("Ticket creado exitosamente")
-      router.push("/dashboard/tickets/usuarios")
+      router.push("/dashboard/tickets/mis-tickets")
     } catch (error) {
       console.error("Error al crear ticket:", error)
     }

@@ -163,6 +163,56 @@ export const usuarioApi = baseApi.injectEndpoints({
         }
       },
     }),
+
+    // Actualizar contraseña del usuario autenticado
+    updatePassword: builder.mutation<
+      UsuarioResponse,
+      { password_actual: string; password_nuevo: string }
+    >({
+      query: (body) => ({
+        url: "/usuarios/update-password",
+        method: "PATCH",
+        body,
+      }),
+      async onQueryStarted(_, { queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled
+          if (data.success) {
+            toast.success(data.message || "Contraseña actualizada exitosamente")
+          }
+        } catch (error: unknown) {
+          const message = error && typeof error === 'object' && 'data' in error 
+            ? (error.data as { message?: string })?.message 
+            : "Error al actualizar contraseña"
+          toast.error(message || "Error al actualizar contraseña")
+        }
+      },
+    }),
+
+    // Actualizar ubicación del usuario autenticado
+    updateLocation: builder.mutation<
+      UsuarioResponse,
+      { sede: string; dependencia: string }
+    >({
+      query: (body) => ({
+        url: "/usuarios/update-location",
+        method: "PATCH",
+        body,
+      }),
+      async onQueryStarted(_, { queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled
+          if (data.success) {
+            toast.success(data.message || "Ubicación actualizada exitosamente")
+          }
+        } catch (error: unknown) {
+          const message = error && typeof error === 'object' && 'data' in error 
+            ? (error.data as { message?: string })?.message 
+            : "Error al actualizar ubicación"
+          toast.error(message || "Error al actualizar ubicación")
+        }
+      },
+    }),
   }),
   overrideExisting: true,
 })
@@ -175,4 +225,6 @@ export const {
   useDeleteUsuarioMutation,
   useToggleUsuarioEstadoMutation,
   useChangePasswordMutation,
+  useUpdatePasswordMutation,
+  useUpdateLocationMutation,
 } = usuarioApi 

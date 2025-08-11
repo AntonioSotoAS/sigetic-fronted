@@ -19,12 +19,14 @@ export interface CreateDependenciaDto {
   nombre: string
   descripcion?: string
   activo?: boolean
+  sede_id: number
 }
 
 export interface UpdateDependenciaDto {
   nombre?: string
   descripcion?: string
   activo?: boolean
+  sede_id?: number
 }
 
 export interface FilterDependenciaDto {
@@ -88,6 +90,28 @@ export const dependenciaApi = baseApi.injectEndpoints({
             ? (error.data as { message?: string })?.message 
             : "Error al cargar dependencia"
           toast.error(message || "Error al cargar dependencia")
+        }
+      },
+    }),
+
+    // Obtener dependencias por sede
+    getDependenciasBySede: builder.query<
+      DependenciasResponse,
+      number
+    >({
+      query: (sedeId) => ({
+        url: `/dependencias/sede/${sedeId}`,
+        method: "GET",
+      }),
+      providesTags: (result, error, sedeId) => [{ type: "Dependencias", id: `sede-${sedeId}` }],
+      async onQueryStarted(_, { queryFulfilled }) {
+        try {
+          await queryFulfilled
+        } catch (error: unknown) {
+          const message = error && typeof error === 'object' && 'data' in error 
+            ? (error.data as { message?: string })?.message 
+            : "Error al cargar dependencias de la sede"
+          toast.error(message || "Error al cargar dependencias de la sede")
         }
       },
     }),
@@ -221,6 +245,7 @@ export const dependenciaApi = baseApi.injectEndpoints({
 export const {
   useGetDependenciasQuery,
   useGetDependenciaQuery,
+  useGetDependenciasBySedeQuery,
   useCreateDependenciaMutation,
   useUpdateDependenciaMutation,
   usePatchDependenciaMutation,
