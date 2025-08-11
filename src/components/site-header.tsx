@@ -3,6 +3,7 @@
 
 import { Separator } from "@/components/ui/separator"
 import { SidebarTrigger } from "@/components/ui/sidebar"
+import { PWAInstallButton } from "@/components/pwa-install-button"
 
 export function SiteHeader() {
   return (
@@ -14,6 +15,9 @@ export function SiteHeader() {
           className="mx-2 data-[orientation=vertical]:h-4"
         />
         <h1 className="text-base font-medium">SIGETIC Dashboard</h1>
+        <div className="ml-auto">
+          <PWAInstallButton />
+        </div>
       </div>
     </header>
   )

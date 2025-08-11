@@ -52,6 +52,24 @@ export const ticketApi = baseApi.injectEndpoints({
       providesTags: ["Tickets"],
     }),
 
+    // Obtener mis tickets asignados
+    getMisTicketsAsignados: builder.query<TicketsResponse, void>({
+      query: () => ({
+        url: "/tickets/mis-tickets-asignados",
+        method: "GET",
+      }),
+      providesTags: ["Tickets"],
+    }),
+
+    // Obtener mis tickets creados
+    getMisTicketsCreados: builder.query<TicketsResponse, void>({
+      query: () => ({
+        url: "/tickets/mis-tickets-creados",
+        method: "GET",
+      }),
+      providesTags: ["Tickets"],
+    }),
+
     // Obtener ticket por ID
     getTicket: builder.query<TicketResponse, number>({
       query: (id) => ({
@@ -96,6 +114,30 @@ export const ticketApi = baseApi.injectEndpoints({
           toast.success("Ticket actualizado exitosamente")
         } catch {
           toast.error("Error al actualizar el ticket")
+        }
+      },
+    }),
+
+    // Cerrar ticket
+    cerrarTicket: builder.mutation<TicketResponse, number>({
+      query: (id) => ({
+        url: `/tickets/${id}`,
+        method: "PATCH",
+        body: {
+          estado: "cerrado",
+          fecha_cierre: new Date().toISOString()
+        },
+      }),
+      invalidatesTags: (result, error, id) => [
+        { type: "Tickets", id },
+        "Tickets"
+      ],
+      async onQueryStarted(_, { queryFulfilled }) {
+        try {
+          await queryFulfilled
+          toast.success("Ticket cerrado exitosamente")
+        } catch {
+          toast.error("Error al cerrar el ticket")
         }
       },
     }),
@@ -154,9 +196,12 @@ export const {
   useGetTicketsSinAsignarQuery,
   useGetTicketsSinAsignarMiSedeQuery,
   useGetMisTicketsQuery,
+  useGetMisTicketsAsignadosQuery,
+  useGetMisTicketsCreadosQuery,
   useGetTicketQuery,
   useCreateTicketMutation,
   useUpdateTicketMutation,
+  useCerrarTicketMutation,
   useDeleteTicketMutation,
   useGetComentariosQuery,
   useCreateComentarioMutation,

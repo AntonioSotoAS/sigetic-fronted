@@ -67,8 +67,8 @@ export function CrearTicketWizard() {
     setTicketData(prev => {
       const newData = { ...prev, [field]: value }
       
-      // Si se selecciona una categoría y no hay prioridad, establecer "baja" por defecto
-      if (field === "categoria" && value && !newData.prioridad) {
+      // Establecer prioridad "baja" por defecto cuando se selecciona una subcategoría
+      if (field === "subcategoria_id" && value) {
         newData.prioridad = PrioridadTicket.BAJA
       }
       

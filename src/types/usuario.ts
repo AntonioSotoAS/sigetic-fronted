@@ -17,6 +17,7 @@ export interface Usuario {
   telefono: string
   password: string
   rol: RolUsuario
+  cargo?: string
   sede?: {
     id: number
     nombre: string
@@ -33,6 +34,7 @@ export interface CreateUsuarioDto {
   telefono: string
   password: string
   rol: RolUsuario
+  cargo?: string
   activo?: boolean
   sede_id?: number
 }

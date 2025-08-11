@@ -10,12 +10,13 @@ export function useAuth() {
   const [isLoading, setIsLoading] = useState(true)
   const [user, setUser] = useState<PerfilResponse | null>(null)
 
-  // Mutation para refresh token
+  // Mutation para refresh token - con manejo de errores más robusto
   const [refresh] = useRefreshMutation()
 
   // Función para verificar autenticación una sola vez
   const checkAuth = useCallback(async () => {
     try {
+      setIsLoading(true)
       const fullUrl = `/api/auth/perfil`
       
       const response = await fetch(fullUrl, {
@@ -29,7 +30,7 @@ export function useAuth() {
       
       if (response.ok) {
         const data = await response.json()
-        if (data.success) {
+        if (data.success && data.user) {
           setIsAuthenticated(true)
           setUser(data.user)
         } else {
@@ -51,6 +52,11 @@ export function useAuth() {
 
   // Función para intentar refresh del token
   const attemptRefresh = useCallback(async () => {
+    if (!refresh || typeof refresh !== 'function') {
+      console.warn("Refresh mutation no disponible")
+      return false
+    }
+
     try {
       const result = await refresh().unwrap()
       if (result.success) {
@@ -70,11 +76,11 @@ export function useAuth() {
     checkAuth()
   }, [checkAuth])
 
-  const logout = () => {
+  const logout = useCallback(() => {
     // El logout se maneja a través de la API route que limpia las cookies
     setIsAuthenticated(false)
     setUser(null)
-  }
+  }, [])
 
   return {
     isAuthenticated,

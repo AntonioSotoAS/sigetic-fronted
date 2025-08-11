@@ -32,6 +32,7 @@ export interface Usuario {
   telefono: string
   password: string
   rol: string
+  cargo?: string
   sede: Sede
   dependencia: Dependencia
   foto_perfil?: string
@@ -83,12 +84,12 @@ export interface Ticket {
   descripcion: string | null
   prioridad: PrioridadTicket
   estado: EstadoTicket
-  user: Usuario
-  dependencia: Dependencia
-  sede: Sede
-  categoria: Categoria | null
-  subcategoria: Subcategoria | null
-  tecnico: Usuario | null
+  user?: Usuario
+  dependencia?: Dependencia
+  sede?: Sede
+  categoria?: Categoria | null
+  subcategoria?: Subcategoria | null
+  tecnico?: Usuario | null
   fecha_asignacion: string | null
   fecha_resolucion: string | null
   fecha_cierre: string | null
@@ -113,6 +114,7 @@ export interface CreateTicketDto {
 export interface UpdateTicketDto {
   estado?: EstadoTicket
   tecnico_id?: number
+  fecha_cierre?: string
 }
 
 // Filtros para listar tickets

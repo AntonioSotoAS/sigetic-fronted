@@ -23,8 +23,8 @@ export function StepCategoriaSubcategoria({
   onCategoriaChange,
   subcategoria_id,
   onSubcategoriaChange,
-  prioridad,
-  onPrioridadChange,
+  // prioridad,
+  // onPrioridadChange,
   descripcion,
   onDescripcionChange
 }: StepCategoriaSubcategoriaProps) {
@@ -161,36 +161,7 @@ export function StepCategoriaSubcategoria({
 
 
 
-        {/* Prioridad - Solo mostrar si hay subcategoría seleccionada */}
-        {subcategoria_id > 0 && (
-          <div>
-            <Label className="text-sm font-medium">Prioridad</Label>
-            <RadioGroup
-              value={prioridad}
-              onValueChange={(value) => onPrioridadChange(value as PrioridadTicket)}
-              className="mt-2"
-            >
-              <div className="grid grid-cols-1 gap-3">
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value={PrioridadTicket.BAJA} id="prioridad-baja" />
-                  <Label htmlFor="prioridad-baja" className="text-sm">Baja</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value={PrioridadTicket.MEDIA} id="prioridad-media" />
-                  <Label htmlFor="prioridad-media" className="text-sm">Media</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value={PrioridadTicket.ALTA} id="prioridad-alta" />
-                  <Label htmlFor="prioridad-alta" className="text-sm">Alta</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value={PrioridadTicket.URGENTE} id="prioridad-urgente" />
-                  <Label htmlFor="prioridad-urgente" className="text-sm">Urgente</Label>
-                </div>
-              </div>
-            </RadioGroup>
-          </div>
-        )}
+        {/* Prioridad oculta - Siempre será "baja" por defecto */}
 
         {/* Descripción - Solo mostrar si hay subcategoría seleccionada */}
         {subcategoria_id > 0 && (

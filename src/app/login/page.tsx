@@ -1,8 +1,6 @@
 import { GalleryVerticalEnd } from "lucide-react"
 import { AuthGuard } from "@/components/auth-guard"
 import { LoginForm } from "@/components/login-form"
-import { EnvCheck } from "@/components/env-check"
-import { CookieDebug } from "@/components/cookie-debug"
 import Image from "next/image"
 
 export default function LoginPage() {
@@ -21,9 +19,6 @@ export default function LoginPage() {
           <div className="flex flex-1 items-center justify-center">
                               <div className="w-full max-w-xs space-y-6">
                     <LoginForm />
-                    {/* Componentes de debug - REMOVER EN PRODUCCIÓN */}
-                    <CookieDebug />
-                    <EnvCheck />
                   </div>
           </div>
         </div>

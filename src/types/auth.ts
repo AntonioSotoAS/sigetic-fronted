@@ -16,7 +16,7 @@ export interface LoginDto {
     apellidos_materno: string
     dni: string
     telefono: string
-    rol: "admin" | "juez" | "superadmin"
+    rol: "admin" | "juez" | "superadmin" | "jefe_soporte" | "ingeniero_soporte" | "usuario"
     activo: boolean
   }
   
