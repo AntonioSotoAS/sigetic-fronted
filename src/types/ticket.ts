@@ -44,13 +44,14 @@ export interface Dependencia {
   nombre: string
   descripcion?: string
   activo: boolean
+  sede_id: number
+  sede?: Sede
 }
 
 export interface Sede {
   id: number
   nombre: string
   direccion: string
-  ciudad: string
   activo: boolean
 }
 
@@ -129,10 +130,14 @@ export interface FilterTicketDto {
 
 // Respuestas de la API
 export interface TicketResponse {
+  success: boolean
+  message?: string
   data: Ticket
 }
 
 export interface TicketsResponse {
+  success: boolean
+  message?: string
   data: Ticket[]
   total: number
   limit: number
@@ -141,6 +146,13 @@ export interface TicketsResponse {
   totalPages: number
   hasNext: boolean
   hasPrev: boolean
+}
+
+// Interfaz para debug
+export interface DebugResponse {
+  success: boolean
+  message?: string
+  data: any
 }
 
 // DTOs para comentarios

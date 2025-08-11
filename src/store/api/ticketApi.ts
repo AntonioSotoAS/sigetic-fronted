@@ -10,19 +10,30 @@ import {
   CreateComentarioDto,
   ComentarioResponse,
   ComentariosResponse,
+  DebugResponse,
 } from "@/types/ticket"
 
 export const ticketApi = baseApi.injectEndpoints({
   overrideExisting: true,
   endpoints: (builder) => ({
     // Obtener lista de tickets
-    getTickets: builder.query<TicketsResponse, FilterTicketDto>({
-      query: (filters) => ({
+    getTickets: builder.query<TicketsResponse, FilterTicketDto | void>({
+      query: (filters = {}) => ({
         url: "/tickets",
         method: "GET",
         params: filters,
       }),
       providesTags: ["Tickets"],
+      async onQueryStarted(_, { queryFulfilled }) {
+        try {
+          await queryFulfilled
+        } catch (error: unknown) {
+          const message = error && typeof error === 'object' && 'data' in error 
+            ? (error.data as { message?: string })?.message 
+            : "Error al cargar tickets"
+          toast.error(message || "Error al cargar tickets")
+        }
+      },
     }),
 
     // Obtener tickets sin asignar
@@ -32,6 +43,16 @@ export const ticketApi = baseApi.injectEndpoints({
         method: "GET",
       }),
       providesTags: ["Tickets"],
+      async onQueryStarted(_, { queryFulfilled }) {
+        try {
+          await queryFulfilled
+        } catch (error: unknown) {
+          const message = error && typeof error === 'object' && 'data' in error 
+            ? (error.data as { message?: string })?.message 
+            : "Error al cargar tickets sin asignar"
+          toast.error(message || "Error al cargar tickets sin asignar")
+        }
+      },
     }),
 
     // Obtener tickets sin asignar de mi sede
@@ -41,6 +62,16 @@ export const ticketApi = baseApi.injectEndpoints({
         method: "GET",
       }),
       providesTags: ["Tickets"],
+      async onQueryStarted(_, { queryFulfilled }) {
+        try {
+          await queryFulfilled
+        } catch (error: unknown) {
+          const message = error && typeof error === 'object' && 'data' in error 
+            ? (error.data as { message?: string })?.message 
+            : "Error al cargar tickets sin asignar de mi sede"
+          toast.error(message || "Error al cargar tickets sin asignar de mi sede")
+        }
+      },
     }),
 
     // Obtener mis tickets
@@ -50,6 +81,16 @@ export const ticketApi = baseApi.injectEndpoints({
         method: "GET",
       }),
       providesTags: ["Tickets"],
+      async onQueryStarted(_, { queryFulfilled }) {
+        try {
+          await queryFulfilled
+        } catch (error: unknown) {
+          const message = error && typeof error === 'object' && 'data' in error 
+            ? (error.data as { message?: string })?.message 
+            : "Error al cargar mis tickets"
+          toast.error(message || "Error al cargar mis tickets")
+        }
+      },
     }),
 
     // Obtener mis tickets asignados
@@ -59,6 +100,16 @@ export const ticketApi = baseApi.injectEndpoints({
         method: "GET",
       }),
       providesTags: ["Tickets"],
+      async onQueryStarted(_, { queryFulfilled }) {
+        try {
+          await queryFulfilled
+        } catch (error: unknown) {
+          const message = error && typeof error === 'object' && 'data' in error 
+            ? (error.data as { message?: string })?.message 
+            : "Error al cargar mis tickets asignados"
+          toast.error(message || "Error al cargar mis tickets asignados")
+        }
+      },
     }),
 
     // Obtener mis tickets creados
@@ -68,6 +119,35 @@ export const ticketApi = baseApi.injectEndpoints({
         method: "GET",
       }),
       providesTags: ["Tickets"],
+      async onQueryStarted(_, { queryFulfilled }) {
+        try {
+          await queryFulfilled
+        } catch (error: unknown) {
+          const message = error && typeof error === 'object' && 'data' in error 
+            ? (error.data as { message?: string })?.message 
+            : "Error al cargar mis tickets creados"
+          toast.error(message || "Error al cargar mis tickets creados")
+        }
+      },
+    }),
+
+    // Obtener tickets asignados a un técnico específico
+    getTicketsAsignados: builder.query<TicketsResponse, number>({
+      query: (tecnicoId) => ({
+        url: `/tickets/asignados/${tecnicoId}`,
+        method: "GET",
+      }),
+      providesTags: (result, error, tecnicoId) => [{ type: "Tickets", id: `tecnico-${tecnicoId}` }],
+      async onQueryStarted(_, { queryFulfilled }) {
+        try {
+          await queryFulfilled
+        } catch (error: unknown) {
+          const message = error && typeof error === 'object' && 'data' in error 
+            ? (error.data as { message?: string })?.message 
+            : "Error al cargar tickets asignados"
+          toast.error(message || "Error al cargar tickets asignados")
+        }
+      },
     }),
 
     // Obtener ticket por ID
@@ -77,6 +157,16 @@ export const ticketApi = baseApi.injectEndpoints({
         method: "GET",
       }),
       providesTags: (result, error, id) => [{ type: "Tickets", id }],
+      async onQueryStarted(_, { queryFulfilled }) {
+        try {
+          await queryFulfilled
+        } catch (error: unknown) {
+          const message = error && typeof error === 'object' && 'data' in error 
+            ? (error.data as { message?: string })?.message 
+            : "Error al cargar ticket"
+          toast.error(message || "Error al cargar ticket")
+        }
+      },
     }),
 
     // Crear ticket
@@ -89,10 +179,13 @@ export const ticketApi = baseApi.injectEndpoints({
       invalidatesTags: ["Tickets"],
       async onQueryStarted(_, { queryFulfilled }) {
         try {
-          await queryFulfilled
-          toast.success("Ticket creado exitosamente")
-        } catch {
-          toast.error("Error al crear el ticket")
+          const { data } = await queryFulfilled
+          toast.success(data.message || "Ticket creado exitosamente")
+        } catch (error: unknown) {
+          const message = error && typeof error === 'object' && 'data' in error 
+            ? (error.data as { message?: string })?.message 
+            : "Error al crear ticket"
+          toast.error(message || "Error al crear ticket")
         }
       },
     }),
@@ -110,10 +203,13 @@ export const ticketApi = baseApi.injectEndpoints({
       ],
       async onQueryStarted(_, { queryFulfilled }) {
         try {
-          await queryFulfilled
-          toast.success("Ticket actualizado exitosamente")
-        } catch {
-          toast.error("Error al actualizar el ticket")
+          const { data } = await queryFulfilled
+          toast.success(data.message || "Ticket actualizado exitosamente")
+        } catch (error: unknown) {
+          const message = error && typeof error === 'object' && 'data' in error 
+            ? (error.data as { message?: string })?.message 
+            : "Error al actualizar ticket"
+          toast.error(message || "Error al actualizar ticket")
         }
       },
     }),
@@ -134,10 +230,13 @@ export const ticketApi = baseApi.injectEndpoints({
       ],
       async onQueryStarted(_, { queryFulfilled }) {
         try {
-          await queryFulfilled
-          toast.success("Ticket cerrado exitosamente")
-        } catch {
-          toast.error("Error al cerrar el ticket")
+          const { data } = await queryFulfilled
+          toast.success(data.message || "Ticket cerrado exitosamente")
+        } catch (error: unknown) {
+          const message = error && typeof error === 'object' && 'data' in error 
+            ? (error.data as { message?: string })?.message 
+            : "Error al cerrar ticket"
+          toast.error(message || "Error al cerrar ticket")
         }
       },
     }),
@@ -151,10 +250,32 @@ export const ticketApi = baseApi.injectEndpoints({
       invalidatesTags: ["Tickets"],
       async onQueryStarted(_, { queryFulfilled }) {
         try {
+          const { data } = await queryFulfilled
+          toast.success(data.message || "Ticket eliminado exitosamente")
+        } catch (error: unknown) {
+          const message = error && typeof error === 'object' && 'data' in error 
+            ? (error.data as { message?: string })?.message 
+            : "Error al eliminar ticket"
+          toast.error(message || "Error al eliminar ticket")
+        }
+      },
+    }),
+
+    // Debug tickets (para desarrollo)
+    debugTickets: builder.query<DebugResponse, void>({
+      query: () => ({
+        url: "/tickets/debug/tickets",
+        method: "GET",
+      }),
+      providesTags: ["Tickets"],
+      async onQueryStarted(_, { queryFulfilled }) {
+        try {
           await queryFulfilled
-          toast.success("Ticket eliminado exitosamente")
-        } catch {
-          toast.error("Error al eliminar el ticket")
+        } catch (error: unknown) {
+          const message = error && typeof error === 'object' && 'data' in error 
+            ? (error.data as { message?: string })?.message 
+            : "Error al cargar debug de tickets"
+          toast.error(message || "Error al cargar debug de tickets")
         }
       },
     }),
@@ -166,6 +287,16 @@ export const ticketApi = baseApi.injectEndpoints({
         method: "GET",
       }),
       providesTags: (result, error, ticketId) => [{ type: "Comentarios", id: ticketId }],
+      async onQueryStarted(_, { queryFulfilled }) {
+        try {
+          await queryFulfilled
+        } catch (error: unknown) {
+          const message = error && typeof error === 'object' && 'data' in error 
+            ? (error.data as { message?: string })?.message 
+            : "Error al cargar comentarios"
+          toast.error(message || "Error al cargar comentarios")
+        }
+      },
     }),
 
     // Crear comentario en un ticket
@@ -181,10 +312,13 @@ export const ticketApi = baseApi.injectEndpoints({
       ],
       async onQueryStarted(_, { queryFulfilled }) {
         try {
-          await queryFulfilled
-          toast.success("Comentario agregado exitosamente")
-        } catch {
-          toast.error("Error al agregar el comentario")
+          const { data } = await queryFulfilled
+          toast.success(data.message || "Comentario agregado exitosamente")
+        } catch (error: unknown) {
+          const message = error && typeof error === 'object' && 'data' in error 
+            ? (error.data as { message?: string })?.message 
+            : "Error al agregar comentario"
+          toast.error(message || "Error al agregar comentario")
         }
       },
     }),
@@ -198,11 +332,13 @@ export const {
   useGetMisTicketsQuery,
   useGetMisTicketsAsignadosQuery,
   useGetMisTicketsCreadosQuery,
+  useGetTicketsAsignadosQuery,
   useGetTicketQuery,
   useCreateTicketMutation,
   useUpdateTicketMutation,
   useCerrarTicketMutation,
   useDeleteTicketMutation,
+  useDebugTicketsQuery,
   useGetComentariosQuery,
   useCreateComentarioMutation,
 } = ticketApi

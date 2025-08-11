@@ -26,9 +26,7 @@ const steps = [
 
 export interface TicketData {
   dependencia_id: number
-  dependencia_personalizada?: string
   sede_id: number
-  sede_personalizada?: string
   categoria: number | 0
   prioridad: PrioridadTicket | ""
   subcategoria_id: number | 0
@@ -41,9 +39,7 @@ export function CrearTicketWizard() {
   const [currentStep, setCurrentStep] = useState(1)
   const [ticketData, setTicketData] = useState<TicketData>({
     dependencia_id: 0,
-    dependencia_personalizada: "",
     sede_id: 0,
-    sede_personalizada: "",
     categoria: 0,
     prioridad: "",
     subcategoria_id: 0,
@@ -52,7 +48,7 @@ export function CrearTicketWizard() {
 
   // Queries para obtener datos
   const { data: dependenciasData } = useGetDependenciasQuery()
-  const { data: sedesData } = useGetSedesQuery({ limit: 50, activo: true, search: "" })
+  const { data: sedesData } = useGetSedesQuery()
   const { data: categoriasData } = useGetCategoriasActiveQuery()
   const { data: subcategoriasData } = useGetSubcategoriasByCategoriaQuery(
     ticketData.categoria, 
@@ -76,19 +72,17 @@ export function CrearTicketWizard() {
     })
   }
 
-  const updateSedeData = (sede_id: number, sede_personalizada?: string) => {
+  const updateSedeData = (sede_id: number) => {
     setTicketData(prev => ({ 
       ...prev, 
-      sede_id, 
-      sede_personalizada: sede_personalizada || "" 
+      sede_id
     }))
   }
 
-  const updateDependenciaData = (dependencia_id: number, dependencia_personalizada?: string) => {
+  const updateDependenciaData = (dependencia_id: number) => {
     setTicketData(prev => ({ 
       ...prev, 
-      dependencia_id, 
-      dependencia_personalizada: dependencia_personalizada || "" 
+      dependencia_id
     }))
   }
 
@@ -107,8 +101,7 @@ export function CrearTicketWizard() {
   const isStepValid = () => {
     switch (currentStep) {
       case 1:
-        return (ticketData.sede_id > 0 || (ticketData.sede_id === -1 && ticketData.sede_personalizada && ticketData.sede_personalizada.trim() !== "")) &&
-               (ticketData.dependencia_id > 0 || (ticketData.dependencia_id === -1 && ticketData.dependencia_personalizada && ticketData.dependencia_personalizada.trim() !== ""))
+        return ticketData.sede_id > 0 && ticketData.dependencia_id > 0
       case 2:
         return ticketData.categoria > 0 && ticketData.subcategoria_id > 0 && ticketData.descripcion !== ""
       default:
@@ -122,21 +115,19 @@ export function CrearTicketWizard() {
       const categorias = categoriasData || []
       const subcategorias = subcategoriasData || []
       
-             const selectedCategoria = categorias.find((cat) => cat.id === ticketData.categoria)
-       const selectedSubcategoria = subcategorias.find((subcat) => subcat.id === ticketData.subcategoria_id)
+      const selectedCategoria = categorias.find((cat) => cat.id === ticketData.categoria)
+      const selectedSubcategoria = subcategorias.find((subcat) => subcat.id === ticketData.subcategoria_id)
 
-       const ticketDto: CreateTicketDto = {
-         user_id: user?.id || 0,
-         titulo: `Ticket - ${selectedCategoria?.nombre || 'Problema'} - ${selectedSubcategoria?.nombre || 'General'}`,
-         descripcion: ticketData.descripcion,
-         categoria_id: ticketData.categoria,
-         subcategoria_id: ticketData.subcategoria_id,
-         prioridad: ticketData.prioridad as PrioridadTicket,
-         dependencia_id: ticketData.dependencia_id,
-         sede_id: ticketData.sede_id,
-       }
-
-
+      const ticketDto: CreateTicketDto = {
+        user_id: user?.id || 0,
+        titulo: `Ticket - ${selectedCategoria?.nombre || 'Problema'} - ${selectedSubcategoria?.nombre || 'General'}`,
+        descripcion: ticketData.descripcion,
+        categoria_id: ticketData.categoria,
+        subcategoria_id: ticketData.subcategoria_id,
+        prioridad: ticketData.prioridad as PrioridadTicket,
+        dependencia_id: ticketData.dependencia_id,
+        sede_id: ticketData.sede_id,
+      }
 
       await createTicket(ticketDto).unwrap()
       toast.success("Ticket creado exitosamente")
@@ -152,9 +143,7 @@ export function CrearTicketWizard() {
         return (
           <StepSedeDependencia
             sede_id={ticketData.sede_id}
-            sede_personalizada={ticketData.sede_personalizada}
             dependencia_id={ticketData.dependencia_id}
-            dependencia_personalizada={ticketData.dependencia_personalizada}
             onSedeChange={updateSedeData}
             onDependenciaChange={updateDependenciaData}
           />
