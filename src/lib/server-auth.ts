@@ -1,6 +1,37 @@
 import { cookies } from 'next/headers'
 import { AUTH_COOKIE_NAME, REFRESH_COOKIE_NAME, COOKIE_OPTIONS, REFRESH_COOKIE_OPTIONS } from './auth-cookies'
 
+// Función para verificar token JWT
+export async function verifyToken(token: string) {
+  try {
+    // En un entorno real, aquí verificarías el token con tu backend
+    // Por ahora, simplemente validamos que el token existe
+    if (!token) {
+      return null
+    }
+    
+    // Opcional: puedes hacer una llamada al backend para verificar el token
+    const backendUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"
+    const response = await fetch(`${backendUrl}/auth/verify`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+    })
+    
+    if (response.ok) {
+      const data = await response.json()
+      return data.user || { id: 'user', role: 'user' }
+    }
+    
+    return null
+  } catch (error) {
+    console.error("Error verificando token:", error)
+    return null
+  }
+}
+
 // Función para establecer cookies (lado servidor)
 export async function setAuthCookies(accessToken: string, refreshToken?: string) {
   const cookieStore = await cookies()

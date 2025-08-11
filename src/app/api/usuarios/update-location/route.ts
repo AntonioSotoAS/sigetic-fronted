@@ -5,7 +5,8 @@ import { verifyToken } from "@/lib/server-auth"
 export async function PATCH(request: NextRequest) {
   try {
     // Verificar autenticación
-    const token = cookies().get("access_token")?.value
+    const cookieStore = await cookies()
+    const token = cookieStore.get("access_token")?.value
     if (!token) {
       return NextResponse.json(
         { message: "No autorizado" },
