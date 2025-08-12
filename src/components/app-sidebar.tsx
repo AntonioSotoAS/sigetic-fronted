@@ -6,6 +6,7 @@ import {
   IconTicket,
   IconUsers,
   IconInnerShadowTop,
+  IconSettings,
 } from "@tabler/icons-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -62,6 +63,12 @@ const menuItems = {
       url: "/dashboard/configuracion",
       icon: IconDashboard,
       roles: ["superadmin"] // Solo superadmin puede ver configuración
+    },
+    {
+      title: "Mi Configuración",
+      url: "/dashboard/mi-configuracion",
+      icon: IconSettings,
+      roles: ["superadmin"] // Solo superadmin puede ver su configuración
     },
   ],
 }

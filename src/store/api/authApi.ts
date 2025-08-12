@@ -13,7 +13,7 @@ export const authApi = baseApi.injectEndpoints({
         refresh_token?: string;
         user: PerfilResponse 
       }, 
-      { correo: string; password: string }  
+      { dni: string; password: string }  
     >({
       query: (body) => ({
         url: "/auth/login",

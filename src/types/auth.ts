@@ -1,7 +1,7 @@
 export interface LoginDto {
-    correo: string
-    password: string
-  }
+  dni: string
+  password: string
+}
   
   export interface LoginResponse {
     message: string

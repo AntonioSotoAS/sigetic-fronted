@@ -12,6 +12,7 @@ import {
   IconPlus,
   IconUser,
   IconLogout,
+  IconSettings,
 } from "@tabler/icons-react"
 
 // Definir los elementos del menú móvil con roles permitidos
@@ -40,6 +41,12 @@ const mobileMenuItems = [
     url: "/dashboard/tickets/mis-asignados",
     icon: IconUsers,
     roles: ["superadmin", "admin", "jefe_soporte", "ingeniero_soporte"]
+  },
+  {
+    title: "Mi Configuración",
+    url: "/dashboard/mi-configuracion",
+    icon: IconSettings,
+    roles: ["superadmin"]
   },
   {
     title: "Perfil",

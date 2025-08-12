@@ -31,7 +31,7 @@ export function LoginForm({
   const [login, { isLoading }] = useLoginMutation()
   const [showPassword, setShowPassword] = useState(false)
   const [formData, setFormData] = useState({
-    correo: "",
+    dni: "",
     password: ""
   })
 
@@ -48,8 +48,14 @@ export function LoginForm({
     e.stopPropagation()
     
     // Validar que los campos no estén vacíos
-    if (!formData.correo || !formData.password) {
+    if (!formData.dni || !formData.password) {
       toast.error("Por favor, completa todos los campos")
+      return
+    }
+    
+    // Validar formato del DNI
+    if (formData.dni.length !== 8 || !/^\d+$/.test(formData.dni)) {
+      toast.error("El DNI debe tener 8 dígitos numéricos")
       return
     }
     
@@ -73,10 +79,21 @@ export function LoginForm({
   }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.id]: e.target.value
-    })
+    const { id, value } = e.target
+    
+    if (id === 'dni') {
+      // Solo permitir números y limitar a 8 dígitos
+      const numericValue = value.replace(/\D/g, '').slice(0, 8)
+      setFormData({
+        ...formData,
+        [id]: numericValue
+      })
+    } else {
+      setFormData({
+        ...formData,
+        [id]: value
+      })
+    }
   }
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -115,20 +132,21 @@ export function LoginForm({
       <div className="flex flex-col items-center gap-2 text-center">
         <h1 className="text-2xl font-bold">Inicia sesión en tu cuenta</h1>
         <p className="text-muted-foreground text-sm text-balance">
-          Ingresa tu correo electrónico para acceder a tu cuenta
+          Ingresa tu DNI para acceder a tu cuenta
         </p>
       </div>
       <div className="grid gap-6">
         <div className="grid gap-3">
-          <Label htmlFor="correo">Correo electrónico</Label>
+          <Label htmlFor="dni">DNI</Label>
           <Input 
-            id="correo" 
-            type="email" 
-            placeholder="ejemplo@pj.gob.com" 
-            value={formData.correo}
+            id="dni" 
+            type="text" 
+            placeholder="Ingresa tu DNI (8 dígitos)" 
+            value={formData.dni}
             onChange={handleInputChange}
             onKeyPress={handleKeyPress}
             disabled={isLoading}
+            maxLength={8}
           />
         </div>
         <div className="grid gap-3">

@@ -24,10 +24,11 @@ export default function LoginPage() {
         </div>
         <div className="bg-muted relative hidden lg:block">
           <Image
-            src="/placeholder.svg"
-            alt="Image"
-            fill
-            className="object-cover dark:brightness-[0.2] dark:grayscale"
+            src="/img/login/fondo-login.png"
+            alt="Imagen de fondo del login"
+            width={1500}
+            height={2000}
+            className="object-cover"
           />
         </div>
       </div>

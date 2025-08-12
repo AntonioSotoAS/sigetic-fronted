@@ -1,6 +1,12 @@
-import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { IconTicket, IconUser, IconCalendar, IconMapPin, IconShield, IconCheck, IconX } from "@tabler/icons-react"
+import { format } from "date-fns"
+import { es } from "date-fns/locale"
+import { useState } from "react"
+import { toast } from "react-hot-toast"
 import { Ticket } from "@/types/ticket"
 
 interface TicketCardProps {
@@ -11,40 +17,7 @@ interface TicketCardProps {
   isCerrando?: boolean
 }
 
-const getPrioridadColors = (prioridad: string) => {
-  switch (prioridad) {
-    case 'urgente':
-      return {
-        bg: 'bg-red-100',
-        text: 'text-red-800',
-        dot: 'bg-red-500'
-      }
-    case 'alta':
-      return {
-        bg: 'bg-orange-100',
-        text: 'text-orange-800',
-        dot: 'bg-orange-500'
-      }
-    case 'media':
-      return {
-        bg: 'bg-yellow-100',
-        text: 'text-yellow-800',
-        dot: 'bg-yellow-500'
-      }
-    case 'baja':
-      return {
-        bg: 'bg-green-100',
-        text: 'text-green-800',
-        dot: 'bg-green-500'
-      }
-    default:
-      return {
-        bg: 'bg-gray-100',
-        text: 'text-gray-800',
-        dot: 'bg-gray-500'
-      }
-  }
-}
+
 
 const formatDate = (dateString: string | Date) => {
   const date = new Date(dateString)
@@ -57,7 +30,7 @@ const formatDate = (dateString: string | Date) => {
 }
 
 export function TicketCard({ ticket, onAsignar, isAsignando, onCerrar, isCerrando }: TicketCardProps) {
-  const colors = getPrioridadColors(ticket.prioridad)
+  const [showCerrarDialog, setShowCerrarDialog] = useState(false)
   
   // Validar que ticket.user existe antes de acceder a sus propiedades
   const nombreCompleto = ticket.user 
@@ -70,6 +43,21 @@ export function TicketCard({ ticket, onAsignar, isAsignando, onCerrar, isCerrand
   
   const fechaCreacion = formatDate(ticket.created_at)
 
+  const handleCerrarClick = () => {
+    setShowCerrarDialog(true)
+  }
+
+  const handleConfirmarCerrar = () => {
+    if (onCerrar) {
+      onCerrar()
+    }
+    setShowCerrarDialog(false)
+  }
+
+  const handleCancelarCerrar = () => {
+    setShowCerrarDialog(false)
+  }
+
   return (
     <Card className="border border-gray-200 hover:shadow-md transition-shadow">
       <CardContent className="p-3 lg:p-4 xl:p-6">
@@ -77,10 +65,6 @@ export function TicketCard({ ticket, onAsignar, isAsignando, onCerrar, isCerrand
         <div className="flex flex-col gap-2 mb-3 lg:mb-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2 lg:space-x-3">
-              <Badge className={`${colors.bg} ${colors.text} border-0 text-xs`}>
-                <div className={`w-1.5 h-1.5 lg:w-2 lg:h-2 rounded-full ${colors.dot} mr-1 lg:mr-2`}></div>
-                {ticket.prioridad.charAt(0).toUpperCase() + ticket.prioridad.slice(1)}
-              </Badge>
               <span className="text-xs lg:text-sm text-gray-600 capitalize">
                 {ticket.categoria ? ticket.categoria.nombre : 'Sin categoría'}
               </span>
@@ -124,7 +108,7 @@ export function TicketCard({ ticket, onAsignar, isAsignando, onCerrar, isCerrand
               variant="outline" 
               size="sm" 
               className="w-full bg-green-600 hover:bg-green-700 text-white border-green-600 text-xs lg:text-sm"
-              onClick={onCerrar}
+              onClick={handleCerrarClick}
               disabled={isCerrando}
             >
               {isCerrando ? "Cerrando..." : "Cerrar ticket"}
@@ -159,7 +143,7 @@ export function TicketCard({ ticket, onAsignar, isAsignando, onCerrar, isCerrand
               <div className="flex justify-between">
                 <span className="text-sm font-medium text-blue-700">Sede:</span>
                 <span className="text-sm text-blue-800 font-semibold">
-                  {ticket.sede ? `${ticket.sede.nombre} - ${ticket.sede.ciudad}` : 'Sede no disponible'}
+                  {ticket.sede ? ticket.sede.nombre : 'Sede no disponible'}
                 </span>
               </div>
               <div className="flex justify-between">
@@ -204,6 +188,44 @@ export function TicketCard({ ticket, onAsignar, isAsignando, onCerrar, isCerrand
           <span className="text-xs text-gray-500">Ticket #{ticket.id}</span>
         </div>
       </CardContent>
+
+      <Dialog open={showCerrarDialog} onOpenChange={setShowCerrarDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirmar Cierre del Ticket</DialogTitle>
+            <DialogDescription>
+              ¿Confirmas que el problema reportado en el ticket <strong>#{ticket.id}</strong> ha sido resuelto?
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-3">
+            <div className="bg-blue-50 p-3 rounded-lg">
+              <div className="text-sm text-blue-800">
+                <strong>Título:</strong> {ticket.titulo}
+              </div>
+              <div className="text-sm text-blue-700 mt-1">
+                <strong>Descripción:</strong> {ticket.descripcion}
+              </div>
+            </div>
+            <div className="text-sm text-gray-600">
+              Al cerrar el ticket, se marcará como resuelto y no se podrá reabrir.
+            </div>
+          </div>
+          
+          <DialogFooter>
+            <Button variant="outline" onClick={handleCancelarCerrar}>
+              Cancelar
+            </Button>
+            <Button 
+              className="bg-green-600 hover:bg-green-700 text-white" 
+              onClick={handleConfirmarCerrar} 
+              disabled={isCerrando}
+            >
+              {isCerrando ? "Cerrando..." : "Sí, el problema está resuelto"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Card>
   )
 }

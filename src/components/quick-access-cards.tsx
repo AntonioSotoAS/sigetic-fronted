@@ -5,6 +5,7 @@ import {
   IconDashboard,
   IconTicket,
   IconUsers,
+  IconSettings,
 } from "@tabler/icons-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -60,6 +61,14 @@ const menuItems = [
     url: "/dashboard/configuracion",
     icon: IconDashboard,
     color: "bg-gray-500",
+    roles: ["superadmin"]
+  },
+  {
+    title: "Mi Configuración",
+    description: "Configuración personal de usuario",
+    url: "/dashboard/mi-configuracion",
+    icon: IconSettings,
+    color: "bg-indigo-500",
     roles: ["superadmin"]
   },
 ]
@@ -133,7 +142,7 @@ export function QuickAccessCards() {
               <p className="text-sm text-gray-600 mb-4 leading-relaxed">
                 {item.description}
               </p>
-              <Button asChild className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 transition-all duration-300">
+              <Button asChild className="w-full transition-all duration-300 hover:scale-105 hover:shadow-lg">
                 <Link href={item.url} className="flex items-center justify-center gap-2">
                   <span>Acceder</span>
                   <IconComponent className="h-4 w-4" />

@@ -6,7 +6,6 @@ import { useGetMisTicketsCreadosQuery, useCerrarTicketMutation } from "@/store/a
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { useAuth } from "@/hooks/use-auth"
 
 export function MisTicketsView() {
   const { data: ticketsData, isLoading, refetch } = useGetMisTicketsCreadosQuery()
