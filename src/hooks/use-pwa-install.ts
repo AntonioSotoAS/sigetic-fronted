@@ -23,10 +23,8 @@ export function usePWAInstall() {
   useEffect(() => {
     // Detectar navegador
     const userAgent = navigator.userAgent;
-    const isChrome = userAgent.includes('Chrome') && !userAgent.includes('Edg');
     const isBrave = userAgent.includes('Brave');
     const isFirefox = userAgent.includes('Firefox');
-    const isEdge = userAgent.includes('Edg');
     
     // Verificar si ya está instalada
     if (window.matchMedia('(display-mode: standalone)').matches) {

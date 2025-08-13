@@ -18,7 +18,7 @@ export function TicketsWithAutoRefresh() {
   const { user } = useAuth()
   const { data: ticketsData, isLoading, refetch } = useGetTicketsSinAsignarMiSedeQuery()
   const [updateTicket] = useUpdateTicketMutation()
-  const { refreshTicketsMiSede, isConnected } = useTicketsAutoRefresh()
+  const { isConnected } = useTicketsAutoRefresh()
 
   // Verificar si ticketsData es un array directo o tiene estructura anidada
   const tickets = Array.isArray(ticketsData) ? ticketsData : ticketsData?.data || []
@@ -44,7 +44,7 @@ export function TicketsWithAutoRefresh() {
         router.push('/dashboard/tickets/mis-asignados')
       }, 1000)
       
-    } catch (error) {
+    } catch {
       toast.error("Error al asignar el ticket")
     }
   }
@@ -131,7 +131,7 @@ export function TicketsWithAutoRefresh() {
             <TicketCard
               key={ticket.id}
               ticket={ticket}
-              onAsignar={handleAsignarTicket}
+              onAsignar={() => handleAsignarTicket(ticket.id)}
               isAsignando={false}
               onCerrar={() => {}}
               isCerrando={false}

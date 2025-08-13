@@ -19,7 +19,7 @@ export function PWARegister() {
         })
 
       // Escuchar eventos del service worker
-      navigator.serviceWorker.addEventListener('message', (event) => {
+      navigator.serviceWorker.addEventListener('message', () => {
         // Manejar mensajes del SW si es necesario
       })
 

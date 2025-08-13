@@ -70,9 +70,7 @@ export const useTicketsAutoRefresh = () => {
       refreshTicketsMiSede()
     }
 
-    const handleTicketStatusChanged = (event: CustomEvent<TicketStatusChangeEvent>) => {
-      const statusChange = event.detail
-      
+    const handleTicketStatusChanged = () => {
       // Actualizar todas las listas cuando cambie el estado
       refreshAllTicketLists()
     }

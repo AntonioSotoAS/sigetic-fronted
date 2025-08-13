@@ -162,7 +162,7 @@ export function StepSedeDependencia({
         setSedeSearchTerm(`${selectedSede.nombre} - ${selectedSede.direccion}`)
       }
     }
-  }, [sedesData, sede_id])
+  }, [sedesData, sede_id, sedeSearchTerm])
 
   useEffect(() => {
     if (dependenciasArray && dependencia_id > 0) {

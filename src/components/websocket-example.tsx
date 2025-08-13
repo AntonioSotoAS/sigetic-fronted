@@ -10,7 +10,7 @@ import { Bell, Ticket, User, Building, Wifi, RefreshCw } from 'lucide-react'
 
 export const WebSocketExample = () => {
   const { socket, isConnected, connectionError, emit } = useWebSocket()
-  const { refreshAllTicketLists, refreshTicketsMiSede, refreshMisTickets, refreshMisTicketsAsignados } = useTicketsAutoRefresh()
+  const { refreshAllTicketLists, refreshTicketsMiSede } = useTicketsAutoRefresh()
   const [recentEvents, setRecentEvents] = useState<Array<{
     type: string
     data: unknown

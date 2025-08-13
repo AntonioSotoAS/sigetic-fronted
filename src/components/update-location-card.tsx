@@ -12,7 +12,7 @@ import { useGetSedesQuery } from "@/store/api/sedeApi"
 import { useGetDependenciasBySedeQuery } from "@/store/api/dependenciaApi"
 import { useUpdateLocationMutation } from "@/store/api/usuarioApi"
 import { useAuth } from "@/hooks/use-auth"
-import { id } from "zod/v4/locales"
+
 
 export default function UpdateLocationCard() {
   const { user, checkAuth } = useAuth()
