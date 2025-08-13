@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef, useEffect, useMemo } from "react"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Sede, Dependencia } from "@/types/ticket"
@@ -46,54 +46,27 @@ export function StepSedeDependencia({
     { skip: sede_id <= 0 }
   )
 
-  // Debug logs
-  console.log("🔍 DEBUG SEDES:", {
-    sedesData,
-    sede_id,
-    sedeSearchTerm,
-    sedeFilteredSedes: sedeFilteredSedes.length
-  })
 
-  console.log("🔍 DEBUG DEPENDENCIAS:", {
-    dependenciasData,
-    dependencia_id,
-    depSearchTerm,
-    depFilteredDependencias: depFilteredDependencias.length,
-    sedeSeleccionada: sede_id
-  })
-
-  console.log("🔍 DEBUG USER:", {
-    user: user ? {
-      id: user.id,
-      sede: user.sede,
-      dependencia: user.dependencia
-    } : null
-  })
 
   // Obtener las dependencias en el formato correcto
-  const dependenciasArray = Array.isArray(dependenciasData) ? dependenciasData : (dependenciasData?.data || [])
+  const dependenciasArray = useMemo(() => {
+    return Array.isArray(dependenciasData) ? dependenciasData : (dependenciasData?.data || [])
+  }, [dependenciasData])
 
   // Filtrar sedes basado en el término de búsqueda
   useEffect(() => {
-    console.log("🔄 useEffect - Filtrar sedes:", {
-      sedesData: sedesData?.data?.length,
-      sedeSearchTerm,
-      filtradas: sedeFilteredSedes.length
-    })
-    
     if (sedesData?.data) {
       // Si el término de búsqueda está vacío, mostrar todas las sedes
       if (!sedeSearchTerm.trim()) {
         setSedeFilteredSedes(sedesData.data)
-        console.log("✅ Mostrando todas las sedes:", sedesData.data.length)
         return
       }
 
       const filtered = sedesData.data.filter(sede => {
         const searchTerm = sedeSearchTerm.toLowerCase()
         const sedeNombre = sede.nombre.toLowerCase()
-        const sedeDireccion = sede.direccion.toLowerCase()
-        const sedeCompleto = `${sede.nombre} - ${sede.direccion}`.toLowerCase()
+        const sedeDireccion = sede.direccion || "Sin direccion"
+        const sedeCompleto = `${sede.nombre} - ${sede.direccion}`
         
         return sedeNombre.includes(searchTerm) ||
                sedeDireccion.includes(searchTerm) ||
@@ -101,24 +74,15 @@ export function StepSedeDependencia({
       })
       
       setSedeFilteredSedes(filtered)
-      console.log("✅ Sedes filtradas:", filtered.length, "de", sedesData.data.length)
     }
-  }, [sedeSearchTerm, sedesData])
+  }, [sedeSearchTerm, sedesData, sedeFilteredSedes.length])
 
   // Filtrar dependencias basado en el término de búsqueda
   useEffect(() => {
-    console.log("🔄 useEffect - Filtrar dependencias:", {
-      dependenciasData: dependenciasArray.length,
-      depSearchTerm,
-      filtradas: depFilteredDependencias.length,
-      sede_id
-    })
-    
     if (dependenciasArray) {
       // Si el término de búsqueda está vacío, mostrar todas las dependencias
       if (!depSearchTerm.trim()) {
         setDepFilteredDependencias(dependenciasArray)
-        console.log("✅ Mostrando todas las dependencias:", dependenciasArray.length)
         return
       }
 
@@ -132,9 +96,8 @@ export function StepSedeDependencia({
       })
       
       setDepFilteredDependencias(filtered)
-      console.log("✅ Dependencias filtradas:", filtered.length, "de", dependenciasArray.length)
     }
-  }, [depSearchTerm, dependenciasArray])
+  }, [depSearchTerm, dependenciasArray, depFilteredDependencias.length, sede_id])
 
   // FLUJO PRINCIPAL: Inicializar con datos del usuario (solo una vez)
   useEffect(() => {
@@ -157,7 +120,7 @@ export function StepSedeDependencia({
         setIsInitialized(true)
       }
     }
-  }, [user, sedesData, sede_id, isInitialized, onSedeChange])
+  }, [user, sedesData, sede_id, dependencia_id, isInitialized, onSedeChange])
 
   // FLUJO SECUNDARIO: Inicializar dependencia cuando se carga la sede (solo una vez)
   useEffect(() => {
@@ -176,14 +139,7 @@ export function StepSedeDependencia({
       // Verificar si la dependencia del usuario está en las dependencias de la sede actual
       const userDepInSede = dependenciasArray.find(dep => dep.id === userDependencia.id)
       
-      console.log("🔍 Verificando dependencia del usuario en sede:", {
-        userDependencia,
-        userDepInSede,
-        dependenciasDisponibles: dependenciasArray.map(d => ({ id: d.id, nombre: d.nombre }))
-      })
-      
       if (userDepInSede) {
-        console.log("✅ Inicializando dependencia del usuario:", userDepInSede)
         onDependenciaChange(userDependencia.id)
         // Establecer el término de búsqueda para mostrar la dependencia seleccionada
         setDepSearchTerm(userDependencia.nombre)
@@ -193,45 +149,25 @@ export function StepSedeDependencia({
 
   // Inicializar dependencias filtradas cuando se cargan las dependencias
   useEffect(() => {
-    console.log("🔄 useEffect - Inicializar dependencias filtradas:", {
-      dependenciasArray: dependenciasArray.length,
-      sede_id
-    })
-    
     if (dependenciasArray.length > 0) {
       setDepFilteredDependencias(dependenciasArray)
-      console.log("✅ Inicializando dependencias filtradas:", dependenciasArray.length)
     }
   }, [dependenciasArray])
 
   // Actualizar términos de búsqueda cuando cambian las selecciones
   useEffect(() => {
-    console.log("🔄 useEffect - Actualizar término de búsqueda sede:", {
-      sedesData: sedesData?.data?.length,
-      sede_id,
-      sedeSearchTerm
-    })
-    
     if (sedesData?.data && sede_id > 0) {
       const selectedSede = sedesData.data.find(sede => sede.id === sede_id)
       if (selectedSede && sedeSearchTerm === "") {
-        console.log("✅ Actualizando término de búsqueda sede:", selectedSede)
         setSedeSearchTerm(`${selectedSede.nombre} - ${selectedSede.direccion}`)
       }
     }
-  }, [sedesData, sede_id, sedeSearchTerm])
+  }, [sedesData, sede_id])
 
   useEffect(() => {
-    console.log("🔄 useEffect - Actualizar término de búsqueda dependencia:", {
-      dependenciasData: dependenciasArray.length,
-      dependencia_id,
-      depSearchTerm
-    })
-    
     if (dependenciasArray && dependencia_id > 0) {
       const selectedDependencia = dependenciasArray.find(dep => dep.id === dependencia_id)
       if (selectedDependencia && depSearchTerm === "") {
-        console.log("✅ Actualizando término de búsqueda dependencia:", selectedDependencia)
         setDepSearchTerm(selectedDependencia.nombre)
       }
     }
@@ -239,19 +175,16 @@ export function StepSedeDependencia({
 
   // Handlers para sede
   const handleSedeSelect = (sede: Sede) => {
-    console.log("🎯 Sede seleccionada:", sede)
     setSedeSearchTerm(`${sede.nombre} - ${sede.direccion}`)
     setSedeIsOpen(false)
     onSedeChange(sede.id)
     
     // Limpiar dependencia cuando cambia la sede
-    console.log("🧹 Limpiando dependencia al cambiar sede")
     onDependenciaChange(0)
     setDepSearchTerm("")
   }
 
   const handleSedeClear = () => {
-    console.log("🧹 Limpiando sede")
     setSedeSearchTerm("")
     onSedeChange(0)
     setSedeIsOpen(false)
@@ -263,14 +196,12 @@ export function StepSedeDependencia({
 
   // Handlers para dependencia
   const handleDepSelect = (dependencia: Dependencia) => {
-    console.log("🎯 Dependencia seleccionada:", dependencia)
     setDepSearchTerm(dependencia.nombre)
     setDepIsOpen(false)
     onDependenciaChange(dependencia.id)
   }
 
   const handleDepClear = () => {
-    console.log("🧹 Limpiando dependencia")
     setDepSearchTerm("")
     onDependenciaChange(0)
     setDepIsOpen(false)

@@ -31,6 +31,8 @@ export interface TicketData {
   prioridad: PrioridadTicket | ""
   subcategoria_id: number | 0
   descripcion: string
+  sede_personalizada?: string
+  dependencia_personalizada?: string
 }
 
 export function CrearTicketWizard() {

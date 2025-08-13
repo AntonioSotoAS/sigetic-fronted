@@ -41,6 +41,9 @@ export function StepCategoriaSubcategoria({
   const categorias = categoriasData || []
   const subcategorias = subcategoriasData || []
 
+  console.log('🔍 Categorías:', categorias)
+  console.log('🔍 Subcategorías:', subcategorias)
+
   return (
     <div className="space-y-6">
       <div>

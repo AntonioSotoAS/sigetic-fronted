@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useAuth } from "@/hooks/use-auth"
 import Link from "next/link"
+import { hasRole } from "@/lib/utils/role-utils"
 
 // Definir los elementos del menú con roles permitidos (igual que en sidebar)
 const menuItems = [
@@ -107,7 +108,7 @@ export function QuickAccessCards() {
       if (!item.roles || item.roles.length === 0) return true
       
       // Verificar si el rol del usuario está en la lista de roles permitidos
-      return item.roles.includes(user.rol)
+      return hasRole(user.rol, item.roles)
     })
   }
 
@@ -133,7 +134,7 @@ export function QuickAccessCards() {
                 <div className={`p-3 rounded-xl ${item.color} text-white group-hover:scale-110 transition-transform duration-300`}>
                   <IconComponent className="h-6 w-6" />
                 </div>
-                <CardTitle className="text-lg group-hover:text-blue-600 transition-colors duration-300">
+                <CardTitle className="text-lg group-hover:text-primary transition-colors duration-300">
                   {item.title}
                 </CardTitle>
               </div>

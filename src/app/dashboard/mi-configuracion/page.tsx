@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { useAuth } from "@/hooks/use-auth"
+import { getRolNombre } from "@/lib/utils/role-utils"
 import { IconSettings, IconUser, IconShield, IconBell, IconPalette } from "@tabler/icons-react"
 import { useState } from "react"
 import { toast } from "react-hot-toast"
@@ -15,7 +16,7 @@ export default function MiConfiguracionPage() {
   const [isLoading, setIsLoading] = useState(false)
 
   // Solo permitir acceso a superadmin
-  if (!user || user.rol !== "superadmin") {
+  if (!user || getRolNombre(user.rol) !== "superadmin") {
     return (
       <div className="container mx-auto p-6">
         <Card>

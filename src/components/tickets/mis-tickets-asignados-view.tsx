@@ -95,7 +95,7 @@ export function MisTicketsAsignadosView() {
                variant={filtroEstado === "cerrados" ? "default" : "outline"}
                size="sm"
                onClick={() => setFiltroEstado("cerrados")}
-               className="text-xs lg:text-sm bg-gray-600 hover:bg-gray-700"
+               className="text-xs lg:text-sm bg-gray-300 hover:bg-gray-400 text-gray-800"
              >
                Cerrados ({estadisticas.cerrados})
              </Button>
@@ -103,7 +103,7 @@ export function MisTicketsAsignadosView() {
                variant={filtroEstado === "pendientes" ? "default" : "outline"}
                size="sm"
                onClick={() => setFiltroEstado("pendientes")}
-               className="text-xs lg:text-sm bg-yellow-600 hover:bg-yellow-700"
+               className="text-xs lg:text-sm bg-yellow-300 hover:bg-yellow-400 text-yellow-800"
              >
                Pendientes ({estadisticas.pendientes})
              </Button>

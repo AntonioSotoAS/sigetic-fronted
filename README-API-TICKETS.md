@@ -524,6 +524,136 @@ export class FilterTicketDto {
 }
 ```
 
+### **UpdateLocationDto**
+```typescript
+// src/usuario/dto/update-location.dto.ts
+import { IsNumber } from 'class-validator'
+import { ApiProperty } from '@nestjs/swagger'
+
+export class UpdateLocationDto {
+  @ApiProperty({ 
+    description: 'ID de la sede',
+    example: 1,
+    type: Number
+  })
+  @IsNumber()
+  sede_id: number
+
+  @ApiProperty({ 
+    description: 'ID de la dependencia',
+    example: 1,
+    type: Number
+  })
+  @IsNumber()
+  dependencia_id: number
+}
+```
+
+### **Endpoint UpdateLocation actualizado**
+```typescript
+// src/usuario/usuario.controller.ts
+@Patch('update-location')
+@ApiOperation({ summary: 'Actualizar sede y dependencia del usuario autenticado' })
+@ApiResponse({ 
+  status: 200, 
+  description: 'Ubicación actualizada exitosamente',
+  schema: {
+    type: 'object',
+    properties: {
+      message: { type: 'string', example: 'Ubicación actualizada exitosamente' },
+      success: { type: 'boolean', example: true },
+      user: {
+        type: 'object',
+        properties: {
+          id: { type: 'number', example: 1 },
+          sede_id: { type: 'number', example: 1 },
+          dependencia_id: { type: 'number', example: 1 }
+        }
+      }
+    }
+  }
+})
+@ApiResponse({ status: 400, description: 'Datos inválidos o no se proporcionaron campos para actualizar' })
+@ApiResponse({ status: 404, description: 'Usuario no encontrado' })
+updateLocation(
+  @Body() dto: UpdateLocationDto,
+  @GetUser() user: Usuario,
+) {
+  console.log('📍 CONTROLLER - updateLocation llamado')
+  console.log('📍 CONTROLLER - User:', {
+    id: user.id,
+    nombres: user.nombres,
+    correo: user.correo
+  })
+  console.log('📍 CONTROLLER - DTO recibido:', {
+    sede_id: dto.sede_id,
+    dependencia_id: dto.dependencia_id
+  })
+  
+  return this.usuarioService.updateLocation(user.id, dto)
+}
+```
+
+### **Servicio UpdateLocation actualizado**
+```typescript
+// src/usuario/usuario.service.ts
+async updateLocation(userId: number, dto: UpdateLocationDto) {
+  console.log('🔧 SERVICE - updateLocation:', {
+    userId,
+    sede_id: dto.sede_id,
+    dependencia_id: dto.dependencia_id
+  })
+
+  // Verificar que la sede existe
+  const sede = await this.sedeService.findOne(dto.sede_id)
+  if (!sede) {
+    throw new NotFoundException('Sede no encontrada')
+  }
+
+  // Verificar que la dependencia existe y pertenece a la sede
+  const dependencia = await this.dependenciaService.findOne(dto.dependencia_id)
+  if (!dependencia) {
+    throw new NotFoundException('Dependencia no encontrada')
+  }
+
+  if (dependencia.sede_id !== dto.sede_id) {
+    throw new BadRequestException('La dependencia no pertenece a la sede seleccionada')
+  }
+
+  // Actualizar el usuario
+  const updatedUser = await this.usuarioRepository.update(userId, {
+    sede_id: dto.sede_id,
+    dependencia_id: dto.dependencia_id
+  })
+
+  if (!updatedUser.affected) {
+    throw new NotFoundException('Usuario no encontrado')
+  }
+
+  // Obtener el usuario actualizado
+  const user = await this.usuarioRepository.findOne({
+    where: { id: userId },
+    relations: ['sede', 'dependencia']
+  })
+
+  console.log('✅ SERVICE - Usuario actualizado:', {
+    id: user.id,
+    sede_id: user.sede_id,
+    dependencia_id: user.dependencia_id
+  })
+
+  return {
+    message: 'Ubicación actualizada exitosamente',
+    success: true,
+    user: {
+      id: user.id,
+      sede_id: user.sede_id,
+      dependencia_id: user.dependencia_id
+    }
+  }
+}
+```
+
 ## 🌐 Endpoints (Routes)
 
 ### **API Routes**

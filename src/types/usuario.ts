@@ -25,6 +25,11 @@ export interface Usuario {
   activo: boolean
 }
 
+export interface UpdateLocationDto {
+  sede_id: number
+  dependencia_id: number
+}
+
 export interface CreateUsuarioDto {
   correo: string
   nombres: string

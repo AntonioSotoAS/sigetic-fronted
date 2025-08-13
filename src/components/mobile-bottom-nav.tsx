@@ -14,6 +14,7 @@ import {
   IconLogout,
   IconSettings,
 } from "@tabler/icons-react"
+import { hasRole } from "@/lib/utils/role-utils"
 
 // Definir los elementos del menú móvil con roles permitidos
 const mobileMenuItems = [
@@ -73,7 +74,7 @@ export function MobileBottomNav() {
     
     return mobileMenuItems.filter(item => {
       if (!item.roles || item.roles.length === 0) return true
-      return item.roles.includes(user.rol)
+      return hasRole(user.rol, item.roles)
     })
   }
 

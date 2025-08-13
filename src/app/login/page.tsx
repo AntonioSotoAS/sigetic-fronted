@@ -22,13 +22,13 @@ export default function LoginPage() {
                   </div>
           </div>
         </div>
-        <div className="bg-muted relative hidden lg:block">
+        <div className="hidden lg:flex items-center justify-center overflow-hidden py-8" style={{ backgroundColor: 'rgb(247, 247, 247)' }}>
           <Image
             src="/img/login/fondo-login.png"
             alt="Imagen de fondo del login"
-            width={1500}
-            height={2000}
-            className="object-cover"
+            width={620}
+            height={620}
+            className="object-contain max-h-[calc(100%-4rem)]"
           />
         </div>
       </div>

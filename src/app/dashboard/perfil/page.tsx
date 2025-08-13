@@ -1,12 +1,9 @@
 "use client"
 
 import { useAuth } from "@/hooks/use-auth"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Skeleton } from "@/components/ui/skeleton"
-import UpdatePasswordCard from "@/components/update-password-card"
 import UpdateLocationCard from "@/components/update-location-card"
+import ProfileCard from "@/components/profile/profile-card"
 
 export default function PerfilPage() {
   const { user, isLoading } = useAuth()
@@ -51,79 +48,11 @@ export default function PerfilPage() {
 
         {/* Primera fila: Información Personal y Editar Sede y Dependencia */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Información del Usuario */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Información Personal</CardTitle>
-              <CardDescription>Datos básicos de tu cuenta</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center space-x-4">
-                <Avatar className="h-16 w-16">
-                  <AvatarFallback className="text-lg">
-                    {user.nombres?.charAt(0) || user.correo?.charAt(0) || "U"}
-                  </AvatarFallback>
-                </Avatar>
-                <div>
-                  <h3 className="text-lg font-semibold">
-                    {user.nombres} {user.apellidos_paterno} {user.apellidos_materno}
-                  </h3>
-                  <p className="text-sm text-gray-600">{user.correo}</p>
-                  <div className="flex gap-2 mt-1">
-                    <Badge variant="secondary">
-                      {user.rol}
-                    </Badge>
-                    <Badge variant={user.activo ? "default" : "destructive"}>
-                      {user.activo ? "Activo" : "Inactivo"}
-                    </Badge>
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex justify-between">
-                  <span className="text-sm font-medium text-gray-600">Nombres:</span>
-                  <span className="text-sm">{user.nombres || "No especificado"}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-sm font-medium text-gray-600">Apellido Paterno:</span>
-                  <span className="text-sm">{user.apellidos_paterno || "No especificado"}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-sm font-medium text-gray-600">Apellido Materno:</span>
-                  <span className="text-sm">{user.apellidos_materno || "No especificado"}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-sm font-medium text-gray-600">DNI:</span>
-                  <span className="text-sm">{user.dni || "No especificado"}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-sm font-medium text-gray-600">Teléfono:</span>
-                  <span className="text-sm">{user.telefono || "No especificado"}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-sm font-medium text-gray-600">Correo:</span>
-                  <span className="text-sm">{user.correo}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-sm font-medium text-gray-600">Rol:</span>
-                  <span className="text-sm capitalize">{user.rol}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-sm font-medium text-gray-600">Estado:</span>
-                  <span className="text-sm">{user.activo ? "Activo" : "Inactivo"}</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          {/* Tarjeta de Perfil */}
+          <ProfileCard user={user} />
 
           {/* Editar Sede y Dependencia */}
           <UpdateLocationCard />
-        </div>
-
-        {/* Segunda fila: Actualizar Contraseña */}
-        <div className="mt-6">
-          <UpdatePasswordCard />
         </div>
       </div>
     </div>

@@ -9,7 +9,7 @@ export function PWAInstallButton() {
   const { isInstallable, isInstalled, installPWA } = usePWAInstall()
   const [isInstalling, setIsInstalling] = useState(false)
 
-  console.log('PWA Install Button:', { isInstallable, isInstalled })
+
 
   const handleInstall = async () => {
     setIsInstalling(true)

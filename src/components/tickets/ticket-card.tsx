@@ -1,12 +1,8 @@
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { IconTicket, IconUser, IconCalendar, IconMapPin, IconShield, IconCheck, IconX } from "@tabler/icons-react"
-import { format } from "date-fns"
-import { es } from "date-fns/locale"
 import { useState } from "react"
-import { toast } from "react-hot-toast"
 import { Ticket } from "@/types/ticket"
 
 interface TicketCardProps {

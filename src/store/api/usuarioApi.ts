@@ -9,6 +9,7 @@ import {
   UsuarioFilters,
   ToggleUsuarioEstadoDto,
   ChangePasswordDto,
+  UpdateLocationDto,
 } from "@/types/usuario"
 
 export const usuarioApi = baseApi.injectEndpoints({
@@ -192,13 +193,14 @@ export const usuarioApi = baseApi.injectEndpoints({
     // Actualizar ubicación del usuario autenticado
     updateLocation: builder.mutation<
       UsuarioResponse,
-      { sede: string; dependencia: string }
+      UpdateLocationDto
     >({
       query: (body) => ({
         url: "/usuarios/update-location",
         method: "PATCH",
         body,
       }),
+      invalidatesTags: ["Auth"], // Invalidar cache de autenticación para refrescar datos del usuario
       async onQueryStarted(_, { queryFulfilled }) {
         try {
           const { data } = await queryFulfilled

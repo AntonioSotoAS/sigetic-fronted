@@ -22,6 +22,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import { useAuth } from "@/hooks/use-auth"
+import { hasRole } from "@/lib/utils/role-utils"
 
 // Definir los elementos del menú con roles permitidos
 const menuItems = {
@@ -85,7 +86,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       if (!item.roles || item.roles.length === 0) return true
       
       // Verificar si el rol del usuario está en la lista de roles permitidos
-      return item.roles.includes(user.rol)
+      return hasRole(user.rol, item.roles)
     })
   }
 

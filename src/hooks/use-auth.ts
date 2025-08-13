@@ -9,6 +9,7 @@ export function useAuth() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [user, setUser] = useState<PerfilResponse | null>(null)
+  const [showPasswordResetModal, setShowPasswordResetModal] = useState(false)
 
   // Mutation para refresh token - con manejo de errores más robusto
   const [refresh] = useRefreshMutation()
@@ -33,18 +34,34 @@ export function useAuth() {
         if (data.success && data.user) {
           setIsAuthenticated(true)
           setUser(data.user)
+          
+          // Verificar si necesita cambiar contraseña - SIEMPRE verificar
+          if (data.user.password_resetada) {
+            setShowPasswordResetModal(true)
+            // Guardar en localStorage para persistencia
+            localStorage.setItem('passwordResetRequired', 'true')
+          } else {
+            setShowPasswordResetModal(false)
+            localStorage.removeItem('passwordResetRequired')
+          }
         } else {
           setIsAuthenticated(false)
           setUser(null)
+          setShowPasswordResetModal(false)
+          localStorage.removeItem('passwordResetRequired')
         }
       } else {
         setIsAuthenticated(false)
         setUser(null)
+        setShowPasswordResetModal(false)
+        localStorage.removeItem('passwordResetRequired')
       }
     } catch (error) {
       console.error("Error verificando autenticación:", error)
       setIsAuthenticated(false)
       setUser(null)
+      setShowPasswordResetModal(false)
+      localStorage.removeItem('passwordResetRequired')
     } finally {
       setIsLoading(false)
     }
@@ -76,10 +93,38 @@ export function useAuth() {
     checkAuth()
   }, [checkAuth])
 
+  // Verificación adicional cuando cambia el usuario
+  useEffect(() => {
+    if (user && user.password_resetada) {
+      setShowPasswordResetModal(true)
+      localStorage.setItem('passwordResetRequired', 'true')
+    } else if (user && !user.password_resetada) {
+      setShowPasswordResetModal(false)
+      localStorage.removeItem('passwordResetRequired')
+    }
+  }, [user])
+
+  // Verificación de localStorage al cargar
+  useEffect(() => {
+    const passwordResetRequired = localStorage.getItem('passwordResetRequired')
+    if (passwordResetRequired === 'true' && user && user.password_resetada) {
+      setShowPasswordResetModal(true)
+    }
+  }, [user])
+
   const logout = useCallback(() => {
     // El logout se maneja a través de la API route que limpia las cookies
     setIsAuthenticated(false)
     setUser(null)
+    setShowPasswordResetModal(false)
+    localStorage.removeItem('passwordResetRequired')
+  }, [])
+
+  // Función para manejar el éxito del cambio de contraseña
+  const handlePasswordResetSuccess = useCallback(() => {
+    setShowPasswordResetModal(false)
+    localStorage.removeItem('passwordResetRequired')
+    // No recargar el perfil porque el usuario será redirigido al login
   }, [])
 
   return {
@@ -89,5 +134,7 @@ export function useAuth() {
     logout,
     attemptRefresh,
     checkAuth, // Exponer para uso manual
+    showPasswordResetModal,
+    handlePasswordResetSuccess,
   }
 }

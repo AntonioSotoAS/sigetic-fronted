@@ -103,6 +103,19 @@ export const authApi = baseApi.injectEndpoints({
         }
       },
     }),
+
+    updatePassword: builder.mutation<
+      { message: string; success: boolean },
+      { password_actual: string; password_nuevo: string }
+    >({
+      query: (body) => ({
+        url: "/usuarios/update-password",
+        method: "PATCH",
+        body,
+      }),
+      invalidatesTags: ["Auth"],
+      // Remover onQueryStarted para que el componente maneje los errores específicamente
+    }),
   }),
   overrideExisting: false,
 })
@@ -112,4 +125,5 @@ export const {
   useLogoutMutation,
   usePerfilQuery,
   useRefreshMutation,
+  useUpdatePasswordMutation,
 } = authApi

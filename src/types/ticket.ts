@@ -152,7 +152,7 @@ export interface TicketsResponse {
 export interface DebugResponse {
   success: boolean
   message?: string
-  data: any
+  data: unknown
 }
 
 // DTOs para comentarios
